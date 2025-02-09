@@ -1,0 +1,24 @@
+[26-Jun-2024 14:20:04 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Widget' not found in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php on line 17
+[28-Aug-2024 03:13:48 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Widget' not found in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php on line 17
+[03-Sep-2024 03:16:18 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Widget' not found in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php on line 17
+[06-Sep-2024 11:27:58 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Widget' not found in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php on line 17
+[23-Sep-2024 14:46:22 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Widget' not found in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php on line 17
+[10-Nov-2024 07:00:27 Asia/Ho_Chi_Minh] PHP Fatal error:  Uncaught Error: Class 'WP_Widget' not found in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/widgets/class-wp-widget-block.php on line 17

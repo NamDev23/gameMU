@@ -1,0 +1,102 @@
+[26-Jun-2024 14:19:32 UTC] PHP Warning:  Use of undefined constant ABSPATH - assumed 'ABSPATH' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[26-Jun-2024 14:19:32 UTC] PHP Warning:  Use of undefined constant WPINC - assumed 'WPINC' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[26-Jun-2024 14:19:32 UTC] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[26-Jun-2024 14:19:32 UTC] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[26-Jun-2024 14:19:32 UTC] PHP Fatal error:  require(): Failed opening required 'ABSPATHWPINC/Requests/src/Autoload.php' (include_path='.:/opt/alt/php74/usr/share/pear') in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[26-Jun-2024 14:19:35 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-scripts.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-scripts.php on line 18
+[26-Jun-2024 14:19:36 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-styles.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-styles.php on line 18
+[26-Jun-2024 14:19:45 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_the_block_template_html() in /home/gamingse/public_html/wp-includes/template-canvas.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/template-canvas.php on line 12
+[28-Aug-2024 03:12:09 UTC] PHP Warning:  Use of undefined constant ABSPATH - assumed 'ABSPATH' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[28-Aug-2024 03:12:09 UTC] PHP Warning:  Use of undefined constant WPINC - assumed 'WPINC' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[28-Aug-2024 03:12:09 UTC] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[28-Aug-2024 03:12:09 UTC] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[28-Aug-2024 03:12:09 UTC] PHP Fatal error:  require(): Failed opening required 'ABSPATHWPINC/Requests/src/Autoload.php' (include_path='.:/opt/alt/php74/usr/share/pear') in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[28-Aug-2024 03:12:17 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-scripts.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-scripts.php on line 18
+[28-Aug-2024 03:12:19 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-styles.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-styles.php on line 18
+[28-Aug-2024 03:12:56 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_the_block_template_html() in /home/gamingse/public_html/wp-includes/template-canvas.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/template-canvas.php on line 12
+[03-Sep-2024 03:11:08 UTC] PHP Warning:  Use of undefined constant ABSPATH - assumed 'ABSPATH' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[03-Sep-2024 03:11:08 UTC] PHP Warning:  Use of undefined constant WPINC - assumed 'WPINC' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[03-Sep-2024 03:11:08 UTC] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[03-Sep-2024 03:11:08 UTC] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[03-Sep-2024 03:11:08 UTC] PHP Fatal error:  require(): Failed opening required 'ABSPATHWPINC/Requests/src/Autoload.php' (include_path='.:/opt/alt/php74/usr/share/pear') in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[03-Sep-2024 03:11:27 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-scripts.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-scripts.php on line 18
+[03-Sep-2024 03:11:33 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-styles.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-styles.php on line 18
+[03-Sep-2024 03:13:07 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_the_block_template_html() in /home/gamingse/public_html/wp-includes/template-canvas.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/template-canvas.php on line 12
+[06-Sep-2024 11:26:15 UTC] PHP Warning:  Use of undefined constant ABSPATH - assumed 'ABSPATH' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[06-Sep-2024 11:26:15 UTC] PHP Warning:  Use of undefined constant WPINC - assumed 'WPINC' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[06-Sep-2024 11:26:15 UTC] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[06-Sep-2024 11:26:15 UTC] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[06-Sep-2024 11:26:15 UTC] PHP Fatal error:  require(): Failed opening required 'ABSPATHWPINC/Requests/src/Autoload.php' (include_path='.:/opt/alt/php74/usr/share/pear') in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[06-Sep-2024 11:26:23 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-scripts.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-scripts.php on line 18
+[06-Sep-2024 11:26:35 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-styles.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-styles.php on line 18
+[06-Sep-2024 11:27:11 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_the_block_template_html() in /home/gamingse/public_html/wp-includes/template-canvas.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/template-canvas.php on line 12
+[23-Sep-2024 14:43:01 UTC] PHP Warning:  Use of undefined constant ABSPATH - assumed 'ABSPATH' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[23-Sep-2024 14:43:01 UTC] PHP Warning:  Use of undefined constant WPINC - assumed 'WPINC' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[23-Sep-2024 14:43:01 UTC] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[23-Sep-2024 14:43:01 UTC] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[23-Sep-2024 14:43:01 UTC] PHP Fatal error:  require(): Failed opening required 'ABSPATHWPINC/Requests/src/Autoload.php' (include_path='.:/opt/alt/php74/usr/share/pear') in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[23-Sep-2024 14:43:16 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-scripts.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-scripts.php on line 18
+[23-Sep-2024 14:43:19 UTC] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-styles.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-styles.php on line 18
+[23-Sep-2024 14:44:18 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_the_block_template_html() in /home/gamingse/public_html/wp-includes/template-canvas.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/template-canvas.php on line 12
+[10-Nov-2024 06:55:59 Asia/Ho_Chi_Minh] PHP Warning:  Use of undefined constant ABSPATH - assumed 'ABSPATH' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[10-Nov-2024 06:55:59 Asia/Ho_Chi_Minh] PHP Warning:  Use of undefined constant WPINC - assumed 'WPINC' (this will throw an Error in a future version of PHP) in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[10-Nov-2024 06:55:59 Asia/Ho_Chi_Minh] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[10-Nov-2024 06:55:59 Asia/Ho_Chi_Minh] PHP Warning:  require(ABSPATHWPINC/Requests/src/Autoload.php): failed to open stream: No such file or directory in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[10-Nov-2024 06:55:59 Asia/Ho_Chi_Minh] PHP Fatal error:  require(): Failed opening required 'ABSPATHWPINC/Requests/src/Autoload.php' (include_path='.:/opt/alt/php74/usr/share/pear') in /home/gamingse/public_html/wp-includes/class-wp-http.php on line 11
+[10-Nov-2024 06:56:23 Asia/Ho_Chi_Minh] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-scripts.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-scripts.php on line 18
+[10-Nov-2024 06:56:28 Asia/Ho_Chi_Minh] PHP Fatal error:  Uncaught Error: Class 'WP_Dependencies' not found in /home/gamingse/public_html/wp-includes/class-wp-styles.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/class-wp-styles.php on line 18
+[10-Nov-2024 06:57:50 Asia/Ho_Chi_Minh] PHP Fatal error:  Uncaught Error: Call to undefined function get_the_block_template_html() in /home/gamingse/public_html/wp-includes/template-canvas.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/gamingse/public_html/wp-includes/template-canvas.php on line 12
