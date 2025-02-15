@@ -11,20 +11,26 @@
     <span class="right-sidebar-title sidebar-title right-sidebar-title-top">
       <?php _e('Đăng nhập', 'mupc'); ?>
     </span>
-    <form id="form-login">
-      <button id="button-login">
-        <a href="#" onclick="changeAction('login'); return false;"><?php _e('Đăng nhập', 'mupc'); ?></a>
-      </button>
-      <div id="login-links" style="font-size:12px">
-        <a href="<?php echo home_url('/forgot-password'); ?>">
-          <?php _e('Khôi phục mật khẩu', 'mupc'); ?>
-        </a>
-        <br>
-        <button id="button-register">
-          <a href="#" onclick="changeAction('register'); return false;"><?php _e('Đăng ký', 'mupc'); ?></a>
+
+    <?php if (!is_user_logged_in()) : ?>
+      <form id="form-login">
+        <button id="button-login">
+          <a href="#" onclick="changeAction('login'); return false;"><?php _e('Đăng nhập', 'mupc'); ?></a>
         </button>
-      </div>
-    </form>
+        <div id="login-links" style="font-size:12px">
+          <a href="<?php echo wp_lostpassword_url(); ?>">Quên mật khẩu?</a>
+          <br>
+          <button id="button-register">
+            <a href="#" onclick="changeAction('register'); return false;"><?php _e('Đăng ký', 'mupc'); ?></a>
+          </button>
+        </div>
+      </form>
+    <?php else : ?>
+      <button id="button-logout">
+        <a href="<?php echo wp_logout_url(home_url()); ?>">Logout</a>
+      </button>
+    <?php endif; ?>
+
   </div>
 
 </aside>
@@ -39,7 +45,7 @@
       if (xhr.readyState === 4 && xhr.status === 200) {
         let parser = new DOMParser();
         let doc = parser.parseFromString(xhr.responseText, "text/html");
-        let newContent = doc.querySelector('.content'); // Lấy phần tử theo class
+        let newContent = doc.querySelector('.content');
 
         if (newContent) {
           document.querySelector('.content').innerHTML = newContent.innerHTML;

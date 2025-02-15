@@ -12,7 +12,192 @@
   ?>
   <main class="content">
     <?php
-    if (isset($_GET['action']) && $_GET['action'] == 'login') {
+
+    if (isset($_GET['action']) && $_GET['action'] === 'verify_email' && isset($_GET['token'])) {
+      $token = sanitize_text_field($_GET['token']);
+
+      // Tìm user có meta email_verification_token = $token
+      $users = get_users(array(
+        'meta_key'   => 'email_verification_token',
+        'meta_value' => $token,
+        'number'     => 1,
+      ));
+
+      if (!empty($users)) {
+        $user = $users[0];
+        // Xác minh thành công: xóa token, set meta is_email_verified = 1
+        delete_user_meta($user->ID, 'email_verification_token');
+        update_user_meta($user->ID, 'is_email_verified', 1);
+
+        echo "<p>Email của bạn đã được xác minh thành công!</p>";
+      } else {
+        echo "<p>Token không hợp lệ hoặc đã hết hạn.</p>";
+      }
+      exit;
+    }
+
+    if (is_user_logged_in()) {
+      // Ví dụ hiển thị dashboard hoặc giao diện home cho người dùng đã đăng nhập
+      $current_user = wp_get_current_user();
+    ?>
+      <div class="dashboard">
+        <h2>Chào mừng, <?php echo esc_html($current_user->display_name); ?></h2><br><br>
+
+        <!-- Menu chứa các nút -->
+        <div class="menu_option">
+          <button id="btnInfo" class="active">Thông tin</button>
+          <button id="btnChangePass">Đổi mật khẩu</button>
+          <button id="btnNapMCash">Nạp mcash</button>
+          <button id="btnChuyenMCash">Chuyển mcash</button>
+          <button id="btnemail">Xác minh email</button>
+          <button id="btnchangename">Đổi tên nhân vật</button>
+        </div>
+
+        <!-- Box chứa thông tin -->
+        <div id="boxInfo" class="content-box active">
+          <?php
+          // Gọi hàm lấy thông tin user
+          $user_info = get_current_user_info();
+
+          if ($user_info === false) {
+          ?>
+            <p>Bạn chưa đăng nhập. <a href="?action=login">Đăng nhập</a></p>
+          <?php
+          } else {
+            // Hiển thị thông tin user bằng HTML
+          ?>
+            <div class="user-info-box">
+              <h2>Thông tin người dùng</h2>
+              <br><br>
+              <p><strong>Tên đăng nhập:</strong>
+                <?php echo esc_html($user_info['username']); ?>
+              </p>
+              <p><strong>Email:</strong>
+                <?php echo esc_html($user_info['email']); ?>
+                <?php
+                // Kiểm tra user đã xác minh email chưa
+                $verified = get_user_meta($current_user->ID, 'is_email_verified', true);
+                if ($verified == 1) {
+                  echo ' <span style="color: green;">(Đã xác minh)</span>';
+                } else {
+                  echo ' <span style="color: red;">(Chưa xác minh)</span>';
+                }
+                ?>
+              </p>
+              <p><strong>Tên hiển thị:</strong> <?php echo esc_html($user_info['display_name']); ?></p>
+
+              <?php if (isset($user_info['phone'])) : ?>
+                <p><strong>Số điện thoại:</strong> <?php echo esc_html($user_info['phone']); ?></p>
+              <?php endif; ?>
+            </div>
+          <?php
+          }
+          ?>
+        </div>
+
+        <!-- Box đổi mật khẩu -->
+        <div id="boxChangePass" class="content-box">
+          <form method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <input type="hidden" name="action" value="change_password_action">
+            <?php wp_nonce_field('change_password_action'); ?>
+
+            <div class="change-password-box">
+              <h2>Đổi mật khẩu</h2>
+              <br><br>
+
+              <p>
+                <label for="old_password">Mật khẩu cũ</label><br><br>
+                <input type="password" id="old_password" name="old_password" required>
+              </p>
+
+              <p>
+                <label for="new_password">Mật khẩu mới</label><br><br>
+                <input type="password" id="new_password" name="new_password" required>
+              </p>
+
+              <p>
+                <label for="re_new_password">Xác nhận mật khẩu mới</label><br><br>
+                <input type="password" id="re_new_password" name="re_new_password" required>
+              </p>
+
+              <p>
+                <button class="btn-changePass" type="submit">Đổi mật khẩu</button>
+              </p>
+            </div>
+          </form>
+        </div>
+
+        <!-- Box nạp mcash -->
+        <div id="boxNapMCash" class="content-box">
+          <!-- Tab lựa chọn: MOMO và Ngân hàng -->
+          <div class="napmcash-tabs">
+            <button id="btnMomo" class="active">MOMO</button>
+            <button id="btnBank">Ngân hàng</button>
+          </div>
+          <!-- Nội dung form nạp tiền -->
+          <div class="napmcash-form">
+            <!-- Form dành cho MOMO -->
+            <div id="momoForm" class="form-content active">
+              <table class="form-table">
+                <tr>
+                  <!-- Cột chứa hình ảnh MOMO -->
+                  <td class="image-col">
+                    <img src="<?php echo get_template_directory_uri(); ?>/images/momo.png" alt="MOMO" style="max-width: 80px;">
+                  </td>
+                  <!-- Cột chứa thông tin người nhận -->
+                  <td class="info-col">
+                    <strong>Cách nạp qua MOMO</strong>
+                    <ul>
+                      <li>Chuyển tiền tới số đt: <b>0862968396</b></li>
+                      <li>Họ tên người nhận: <b>Đinh Thị Diệu Linh</b></li>
+                      <li>Nội dung chuyển tiền là ID cần nạp</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <!-- Form dành cho Ngân hàng -->
+            <div id="bankForm" class="form-content">
+              <table class="form-table">
+                <tr>
+                  <!-- Cột chứa hình ảnh logo ngân hàng (thay link hình theo thực tế) -->
+                  <td class="image-col">
+                    <img src="<?php echo get_template_directory_uri(); ?>/images/acb.jpeg" alt="Ngân hàng" style="max-width: 180px;">
+                  </td>
+                  <!-- Cột chứa thông tin người nhận -->
+                  <td class="info-col">
+                    <strong>Cách nạp qua Ngân hàng</strong>
+                    <ul>
+                      <li>Ngân Hàng: <b>ACB - Ngân hàng Thương mại Cổ phần Á Châu</b></li>
+                      <li>Chuyển tiền tới STK: <b>838608888</b></li>
+                      <li>Tên tài khoản: <b>Đinh Thị Diệu Linh</b></li>
+                      <li>Nội dung chuyển tiền là ID cần nạp</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Thêm boxEmail để gửi link xác minh -->
+        <div id="boxEmail" class="content-box">
+          <h3>Xác minh email</h3>
+          <p>Email hiện tại của bạn: <strong><?php echo esc_html($current_user->user_email); ?></strong></p>
+          <p>Nhấn nút để gửi link xác minh:</p>
+
+          <form method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <input type="hidden" name="action" value="send_verification_link">
+            <?php wp_nonce_field('send_verification_link'); ?>
+            <button type="submit">Gửi link xác minh</button>
+          </form>
+        </div>
+
+      </div>
+
+    <?php
+    } elseif (isset($_GET['action']) && $_GET['action'] == 'login') {
       include 'form-login.php'; // Gọi file form-login.php
     } elseif (isset($_GET['action']) && $_GET['action'] == 'register') {
       include 'form-register.php'; // Gọi file form-register.php
@@ -228,3 +413,217 @@
     xhr.send();
   }
 </script>
+<script>
+  // Lấy các phần tử nút và box
+  const btnInfo = document.getElementById('btnInfo');
+  const btnChangePass = document.getElementById('btnChangePass');
+  const btnNapMCash = document.getElementById('btnNapMCash');
+
+  const boxInfo = document.getElementById('boxInfo');
+  const boxChangePass = document.getElementById('boxChangePass');
+  const boxNapMCash = document.getElementById('boxNapMCash');
+
+  // Hàm reset tất cả các button và box về trạng thái ban đầu
+  function resetTabs() {
+    // Xóa class active của tất cả các button
+    btnInfo.classList.remove('active');
+    btnChangePass.classList.remove('active');
+    btnNapMCash.classList.remove('active');
+
+    // Ẩn tất cả các box
+    boxInfo.classList.remove('active');
+    boxChangePass.classList.remove('active');
+    boxNapMCash.classList.remove('active');
+  }
+
+  // Xử lý sự kiện click cho từng button
+  btnInfo.addEventListener('click', () => {
+    resetTabs();
+    btnInfo.classList.add('active');
+    boxInfo.classList.add('active');
+  });
+
+  btnChangePass.addEventListener('click', () => {
+    resetTabs();
+    btnChangePass.classList.add('active');
+    boxChangePass.classList.add('active');
+  });
+
+  btnNapMCash.addEventListener('click', () => {
+    resetTabs();
+    btnNapMCash.classList.add('active');
+    boxNapMCash.classList.add('active');
+  });
+
+  document.getElementById('btnMomo').addEventListener('click', function() {
+    // Cập nhật trạng thái active cho các button
+    document.getElementById('btnMomo').classList.add('active');
+    document.getElementById('btnBank').classList.remove('active');
+    // Hiển thị form MOMO, ẩn form Ngân hàng
+    document.getElementById('momoForm').classList.add('active');
+    document.getElementById('bankForm').classList.remove('active');
+  });
+
+  document.getElementById('btnBank').addEventListener('click', function() {
+    // Cập nhật trạng thái active cho các button
+    document.getElementById('btnBank').classList.add('active');
+    document.getElementById('btnMomo').classList.remove('active');
+    // Hiển thị form Ngân hàng, ẩn form MOMO
+    document.getElementById('bankForm').classList.add('active');
+    document.getElementById('momoForm').classList.remove('active');
+  });
+  const btnemail = document.getElementById('btnemail');
+  const boxEmail = document.getElementById('boxEmail');
+
+  // Trong hàm resetTabs(), xóa class active của btnemail và boxEmail
+  function resetTabs() {
+    btnInfo.classList.remove('active');
+    btnChangePass.classList.remove('active');
+    btnNapMCash.classList.remove('active');
+    btnemail.classList.remove('active');
+
+    boxInfo.classList.remove('active');
+    boxChangePass.classList.remove('active');
+    boxNapMCash.classList.remove('active');
+    boxEmail.classList.remove('active');
+  }
+
+  // Sự kiện click cho btnemail
+  btnemail.addEventListener('click', () => {
+    resetTabs();
+    btnemail.classList.add('active');
+    boxEmail.classList.add('active');
+  });
+</script>
+<style>
+  /* CSS cho menu button */
+  .menu_option {
+    display: flex;
+    flex-wrap: wrap;
+    /* border-bottom: 1px solid #ccc;
+              margin-bottom: 10px; */
+  }
+
+  .menu button {
+    /* padding: 10px 20px;
+              border: none;
+              background-color: #f0f0f0; */
+    cursor: pointer;
+    font-size: 16px;
+    flex: 0 0 calc(33.33% - 10px);
+    /* mỗi button chiếm khoảng 1/3 chiều rộng trừ đi khoảng cách */
+    box-sizing: border-box;
+    /* transition: background-color 0.3s; */
+  }
+
+  .menu button.active {
+    background-color: #ddd;
+    font-weight: bold;
+  }
+
+  /* CSS cho box chứa nội dung */
+  .content-box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    display: none;
+    /* ẩn mặc định */
+  }
+
+  .content-box.active {
+    display: block;
+  }
+
+  #boxChangePass {
+    /* display: flex; */
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #btn-changePass {
+    display: flex !important;
+    text-align: center !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+  }
+
+  /* Một vài style cho form */
+  form div {
+    margin-bottom: 10px;
+  }
+
+  label {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+  }
+
+  input {
+    padding: 5px;
+    width: 200px;
+  }
+
+  /* Style cho box nạp mcash */
+  #boxNapMCash {
+    border: 1px solid #ccc;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #D1CBBF;
+    font-family: Arial, sans-serif;
+  }
+
+  /* Style cho các tab button */
+  .napmcash-tabs {
+    display: flex;
+    gap: 10px;
+    /* Khoảng cách giữa 2 button, điều chỉnh theo ý bạn */
+    /* Nếu cần căn giữa container, có thể thêm: */
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .napmcash-tabs button {
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+
+
+  /* Style cho nội dung form */
+  .napmcash-form .form-content {
+    display: none;
+  }
+
+  .napmcash-form .form-content.active {
+    display: block;
+  }
+
+  /* Style cho bảng form */
+  .form-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .form-table .image-col {
+    width: 100px;
+    text-align: center;
+    vertical-align: top;
+  }
+
+  .form-table .info-col {
+    padding-left: 10px;
+  }
+
+  .user-info-box h2 {
+    font-size: 20px;
+    /* Tăng cỡ chữ tùy ý */
+    font-weight: bold;
+    /* In đậm */
+    color: #333;
+    /* Màu chữ */
+    /* margin-bottom: 10px; */
+    /* Khoảng cách dưới */
+  }
+</style>
