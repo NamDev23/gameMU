@@ -21,6 +21,10 @@
                 <input type="password" class="common_input" id="re-login_password" name="re_password" placeholder="Nhập lại mật khẩu" required>
             </div>
             <div class="form_group">
+                <label for="pw2"> Mã vòng trong game </label>
+                <input type="text" class="pw2" id="pw2" name="pw2" placeholder="6 số"required>
+            </div>
+            <div class="form_group">
                 <label for="email"> Email</label>
                 <input type="email" class="common_input" id="email" name="email" required>
             </div>

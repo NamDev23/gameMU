@@ -41,10 +41,13 @@
 
 /** The name of the database for WordPress */
 
-define('WP_HOME', 'http://127.0.0.1:8000');
+// define('WP_HOME', 'http://127.0.0.1:8000');
 
-define('WP_SITEURL', 'http://127.0.0.1:8000');
+// define('WP_SITEURL', 'http://127.0.0.1:8000');
 
+if (!session_id()) {
+    session_start();
+}
 
 define('DB_NAME', 'gamingse');
 

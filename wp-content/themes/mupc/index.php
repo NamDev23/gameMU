@@ -182,6 +182,7 @@
 
 
         <!-- Thêm boxEmail để gửi link xác minh -->
+        <!-- Thêm boxEmail để gửi link xác minh -->
         <div id="boxEmail" class="content-box">
           <h3>Xác minh email</h3>
           <p>Email hiện tại của bạn: <strong><?php echo esc_html($current_user->user_email); ?></strong></p>
@@ -189,10 +190,20 @@
 
           <form method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="send_verification_link">
-            <?php wp_nonce_field('send_verification_link'); ?>
-            <button type="submit">Gửi link xác minh</button>
+            <?php wp_nonce_field('send_verification_link_action', 'send_verification_link_nonce'); ?>
+
+            <div class="form_group">
+              <label for="captcha">Mã chống spam</label>
+              <!-- <div class="captcha_container">
+                <input type="text" class="captcha" id="captcha" name="captcha" placeholder="4 số" maxlength="4" minlength="4" required>
+                <img src="<?php echo esc_url(home_url('/captcha.php')); ?>" alt="Captcha" class="captcha_img" onclick="this.src='<?php echo esc_url(home_url('/captcha.php')); ?>?'+Math.random();">
+              </div>
+            </div> -->
+
+              <button type="submit">Gửi link xác minh</button>
           </form>
         </div>
+
 
       </div>
 

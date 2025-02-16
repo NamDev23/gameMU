@@ -90,12 +90,13 @@ function hk_welcome_dashboard()
 	wp_add_dashboard_widget('custom_support_widget', 'Dashboard', 'hk_dashboard_content');
 }
 
-
 // Hook xử lý form đăng ký
-add_action('admin_post_nopriv_custom_register_action', 'handle_custom_register');
+add_action('admin_post_nopriv_custom_register_action', 'custom_register_user');
 
 function custom_register_user()
 {
+	// global $wpdb; // Kết nối database của WordPress
+
 	// Kiểm tra nếu form được gửi đúng cách
 	if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['action']) || $_POST['action'] !== 'custom_register_action') {
 		wp_die('Lỗi bảo mật, vui lòng thử lại.');
@@ -112,12 +113,10 @@ function custom_register_user()
 	$re_password = $_POST['re_password'];
 	$email      = sanitize_email($_POST['email']);
 	$phone      = sanitize_text_field($_POST['phone']);
-	$captcha    = sanitize_text_field($_POST['captcha']);
-
-
+	$pw2		= sanitize_text_field($_POST['pw2']);
 
 	// Kiểm tra dữ liệu đầu vào
-	if (empty($username) || empty($password) || empty($re_password) || empty($email) || empty($phone) || empty($captcha)) {
+	if (empty($username) || empty($password) || empty($re_password) || empty($email) || empty($phone)) {
 		wp_die('Vui lòng điền đầy đủ thông tin.');
 	}
 
@@ -125,20 +124,21 @@ function custom_register_user()
 	if (username_exists($username)) {
 		wp_die('Tên tài khoản đã tồn tại. Vui lòng chọn tên khác.');
 	}
-
-	// Kiểm tra email đã tồn tại chưa
 	if (email_exists($email)) {
 		wp_die('Email đã được sử dụng. Vui lòng chọn email khác.');
+	}
+	$existing_phone = get_users([
+		'meta_key'   => 'phone',
+		'meta_value' => $phone,
+		'number'     => 1,
+	]);
+	if (!empty($existing_phone)) {
+		wp_die('Số điện thoại đã được sử dụng trong WordPress.');
 	}
 
 	// Kiểm tra mật khẩu nhập lại
 	if ($password !== $re_password) {
 		wp_die('Mật khẩu nhập lại không khớp.');
-	}
-
-	// Kiểm tra độ dài mật khẩu
-	if (strlen($password) < 6 || strlen($password) > 50) {
-		wp_die('Mật khẩu phải từ 6 - 50 ký tự.');
 	}
 
 	// Kiểm tra độ dài username
@@ -150,29 +150,26 @@ function custom_register_user()
 	if (!preg_match('/^[0-9]{10,12}$/', $phone)) {
 		wp_die('Số điện thoại không hợp lệ.');
 	}
-	// Kiểm tra mã captcha (giả định đã lưu trong session)
-	add_action('init', 'start_session_custom');
-	function start_session_custom()
-	{
-		if (!session_id()) {
-			session_start();
-		}
+	if (!preg_match('/^[0-9]{1,6}$/', $pw2)) {
+		wp_die('Số điện thoại không hợp lệ.');
 	}
-	// $captcha_input = isset($_POST['captcha']) ? $_POST['captcha'] : '';
-	// if (!isset($_SESSION['captcha_code']) || (string)$_SESSION['captcha_code'] !== $captcha_input) {
-	// 	wp_die('Mã chống spam không chính xác.');
-	// }
+	// session_start(); // Đảm bảo session được khởi động
 
-	// // Nếu đúng, xóa CAPTCHA khỏi session để không tái sử dụng
-	// unset($_SESSION['captcha_code']);
+	if (!isset($_SESSION['captcha_code'])) {
+		wp_die('Lỗi session, vui lòng thử lại.');
+	}
+
+	// Ép kiểu $_POST['captcha'] về integer để so sánh đúng
+	if ((int)$_POST['captcha'] !== $_SESSION['captcha_code']) {
+		wp_die('Mã CAPTCHA không chính xác.');
+	}
 
 
-
-
-	// Xóa captcha sau khi kiểm tra
+	// Xóa CAPTCHA sau khi kiểm tra để tránh spam
 	unset($_SESSION['captcha_code']);
 
-	// Tạo user mới
+
+	// Tạo user mới trên WordPress
 	$user_id = wp_create_user($username, $password, $email);
 	if (is_wp_error($user_id)) {
 		wp_die('Có lỗi xảy ra khi tạo tài khoản.');
@@ -180,6 +177,33 @@ function custom_register_user()
 
 	// Thêm số điện thoại vào user meta
 	update_user_meta($user_id, 'phone', $phone);
+
+	// 🔥 **Kết nối database của hệ thống game MU hoặc hệ thống khác**
+	$db_host = '127.0.0.1'; // Thay đổi nếu cần
+	$db_name = 'dbaccount'; // Tên database của bảng `db_account`
+	$db_user = 'root'; // User DB
+	$db_pass = '123123aB'; // Mật khẩu DB
+
+	$mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+	if ($mysqli->connect_error) {
+		wp_die('Lỗi kết nối database game.');
+	}
+
+	// Hash mật khẩu nếu hệ thống MU cần mã hóa
+	$hashed_password = md5($password); // Nếu hệ thống game sử dụng MD5, thay bằng bcrypt nếu cần
+
+	// Chèn user vào bảng `db_account`
+	$stmt = $mysqli->prepare("INSERT INTO t_account (name, pwd, pw2) VALUES (?, ?, ?)");
+	$stmt->bind_param("sss", $username, $hashed_password, $pw2);
+
+	if (!$stmt->execute()) {
+		wp_die('Lỗi khi tạo tài khoản trong hệ thống game.');
+	}
+
+	// Đóng kết nối
+	$stmt->close();
+	$mysqli->close();
 
 	// Đăng nhập ngay sau khi đăng ký
 	$creds = [
@@ -201,6 +225,7 @@ function custom_register_user()
 add_action('admin_post_nopriv_custom_register_action', 'custom_register_user');
 
 
+
 function custom_login_user()
 {
 	// Kiểm tra phương thức gửi dữ liệu và action
@@ -220,6 +245,12 @@ function custom_login_user()
 	if (empty($username) || empty($password)) {
 		wp_die('Vui lòng nhập đầy đủ thông tin đăng nhập.');
 	}
+	if ((int)$_POST['captcha'] !== $_SESSION['captcha_code']) {
+		wp_die('Mã CAPTCHA không chính xác.');
+	}
+
+	// Xóa CAPTCHA sau khi kiểm tra để tránh spam
+	unset($_SESSION['captcha_code']);
 
 	// Tạo mảng dữ liệu đăng nhập cho wp_signon()
 	$creds = array(
@@ -352,54 +383,38 @@ add_action('admin_post_change_password_action', 'handle_change_password');      
 
 /**
  * Gửi link xác minh email cho user đang đăng nhập
- */
-function send_verification_link()
+ */ function handle_send_verification_link()
 {
-	// Kiểm tra method & action
-	if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['action']) || $_POST['action'] !== 'send_verification_link') {
-		wp_die('Lỗi bảo mật hoặc sai phương thức gửi dữ liệu.');
+	if (
+		!isset($_POST['send_verification_link_nonce']) ||
+		!wp_verify_nonce($_POST['send_verification_link_nonce'], 'send_verification_link_action')
+	) {
+		wp_die('Lỗi bảo mật! Vui lòng thử lại.');
 	}
 
-	// Kiểm tra nonce
-	if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'send_verification_link')) {
-		wp_die('Lỗi bảo mật, vui lòng thử lại.');
-	}
+	$user = wp_get_current_user();
+	$email = $user->user_email;
+	$username = $user->user_login;
 
-	// Kiểm tra user đăng nhập
-	if (!is_user_logged_in()) {
-		wp_die('Bạn chưa đăng nhập. Vui lòng đăng nhập trước.');
-	}
+	// Tạo mã xác thực
+	$verification_code = wp_generate_password(32, false);
+	update_user_meta($user->ID, 'email_verification_code', $verification_code);
 
-	$current_user = wp_get_current_user();
-	if (!$current_user || 0 === $current_user->ID) {
-		wp_die('Không tìm thấy người dùng.');
-	}
+	$verification_link = site_url("/verify-email?code=$verification_code&user={$user->ID}");
 
-	// Tạo token ngẫu nhiên
-	$token = wp_generate_password(20, false);
-	// Lưu token vào user_meta
-	update_user_meta($current_user->ID, 'email_verification_token', $token);
-	// Bạn có thể lưu thêm thời gian hết hạn nếu muốn
+	$subject = "Xác minh email của bạn";
+	$message = "Chào bạn $username,\n\nBạn hoặc ai đó đã yêu cầu xác minh email tại " . site_url() . "\n\nĐể xác minh email, nhấp vào link sau:\n\n$verification_link\n\nNếu không phải bạn, hãy bỏ qua email này.";
+	$headers = ['Content-Type: text/plain; charset=UTF-8'];
 
-	// Tạo link xác minh
-	// Người dùng sẽ click link này => ?action=verify_email&token=...
-	$verify_link = add_query_arg(array(
-		'action' => 'verify_email',
-		'token'  => $token,
-	), home_url('/'));
+	wp_mail($email, $subject, $message, $headers);
 
-	// Gửi email
-	$subject = "Xác minh email";
-	$message = "Chào bạn, vui lòng nhấn vào link sau để xác minh email: \n$verify_link\n";
-	// Dùng wp_mail
-	wp_mail($current_user->user_email, $subject, $message);
-
-	// Chuyển hướng về trang chủ kèm query string báo đã gửi
-	wp_redirect(home_url('/?email_verify_sent=1'));
+	// Hiển thị thông báo thay vì chuyển hướng
+	echo '<script>alert("✅ Email xác minh đã được gửi. Vui lòng kiểm tra hộp thư của bạn."); window.location.href="' . site_url('/') . '";</script>';
 	exit;
 }
-add_action('admin_post_nopriv_send_verification_link', 'send_verification_link');
-add_action('admin_post_send_verification_link', 'send_verification_link');
+
+add_action('admin_post_send_verification_link', 'handle_send_verification_link');
+add_action('admin_post_nopriv_send_verification_link', 'handle_send_verification_link');
 
 /**
  * Hàm xử lý quên mật khẩu.

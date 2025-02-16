@@ -21,6 +21,14 @@
                 <input type="password" class="common_input" id="login_password" name="password" placeholder="Từ 6 tới 50 ký tự" maxlength="50" minlength="6" required>
             </div>
 
+            <div class="form_group">
+                <label for="captcha">Mã chống spam</label>
+                <div class="captcha_container">
+                    <input type="text" class="captcha" id="captcha" name="captcha" placeholder="4 số" maxlength="4" minlength="4" required>
+                    <img src="<?php echo esc_url(get_template_directory_uri() . '/captcha.php'); ?>" alt="Captcha" class="captcha_img" onclick="this.src='<?php echo esc_url(get_template_directory_uri() . '/captcha.php'); ?>?'+Math.random();">
+                </div>
+            </div>
+
             <div class="form_group btn_group">
                 <input type="submit" value="Đăng nhập" class="button">
             </div>
@@ -86,7 +94,6 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         background: #333;
-        color: #fff;
     }
 
     /* Captcha */
