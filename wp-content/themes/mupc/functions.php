@@ -479,6 +479,150 @@ function handle_forgot_password()
 add_action('admin_post_nopriv_custom_forgot_password', 'handle_forgot_password');
 add_action('admin_post_custom_forgot_password', 'handle_forgot_password');
 
+
+function cash_management_admin_menu()
+{
+	add_menu_page(
+		'Quản lý nạp tiền',    // Tiêu đề trang
+		'💰 Nạp tiền',         // Tên menu sidebar
+		'manage_options',      // Quyền hạn (chỉ admin)
+		'cash-management',     // Slug của trang
+		'render_cash_management_page', // Hàm hiển thị nội dung
+		'dashicons-money',     // Icon menu (WordPress Dashicons)
+		20                     // Vị trí hiển thị
+	);
+
+	// Thêm submenu "Lịch sử nạp tiền"
+	add_submenu_page(
+		'cash-management',
+		'Lịch sử nạp tiền',
+		'📜 Lịch sử',
+		'manage_options',
+		'cash-history',
+		'show_cash_transactions'
+	);
+}
+add_action('admin_menu', 'cash_management_admin_menu');
+function add_cash_to_user($user_id, $amount)
+{
+	global $wpdb;
+
+	$user_id = intval($user_id);
+	$amount = intval($amount);
+
+	if ($user_id <= 0 || $amount <= 0) {
+		return ['status' => 'error', 'message' => '❌ Vui lòng nhập số tiền hợp lệ!'];
+	}
+
+	// Lấy số dư hiện tại của user
+	$current_balance = $wpdb->get_var("SELECT user_balance FROM wp_users WHERE ID = $user_id");
+
+	// Nếu user chưa có số dư, đặt về 0
+	if ($current_balance === null) {
+		$current_balance = 0;
+	}
+
+	// Cập nhật số dư mới
+	$new_balance = $current_balance + $amount;
+	$wpdb->update(
+		'wp_users',
+		['user_balance' => $new_balance],
+		['ID' => $user_id],
+		['%d'],
+		['%d']
+	);
+
+	// Lưu lịch sử giao dịch vào user_meta
+	$transactions = get_user_meta($user_id, 'cash_transactions', true);
+	if (!is_array($transactions)) {
+		$transactions = [];
+	}
+
+	$transactions[] = [
+		'amount' => $amount,
+		'date'   => current_time('mysql'),
+		'admin'  => wp_get_current_user()->user_login
+	];
+
+	update_user_meta($user_id, 'cash_transactions', $transactions);
+
+	return ['status' => 'success', 'message' => '✅ Đã nạp ' . number_format($amount, 0, ',', '.') . ' VND vào tài khoản User ID: ' . $user_id];
+}
+
+
+function render_cash_management_page()
+{
+	if (isset($_POST['submit_cash'])) {
+		$result = add_cash_to_user($_POST['user_id'], $_POST['amount']);
+		echo '<div class="' . ($result['status'] === 'success' ? 'updated' : 'error') . '"><p>' . $result['message'] . '</p></div>';
+	}
+
+?>
+	<div class="wrap">
+		<h1>💰 Nạp tiền cho User</h1>
+		<form method="post">
+			<table class="form-table">
+				<tr>
+					<th><label for="user_id">🔎 Chọn User:</label></th>
+					<td>
+						<select name="user_id" id="user_id">
+							<?php
+							$users = get_users();
+							foreach ($users as $user) {
+								echo '<option value="' . esc_attr($user->ID) . '">' . esc_html($user->user_login) . ' (' . esc_html($user->user_email) . ')</option>';
+							}
+							?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="amount">💰 Số tiền cần nạp:</label></th>
+					<td><input type="number" name="amount" id="amount" required min="1"></td>
+				</tr>
+			</table>
+			<p><input type="submit" name="submit_cash" value="Nạp tiền" class="button button-primary"></p>
+		</form>
+	</div>
+<?php
+}
+
+
+function show_cash_transactions()
+{
+	echo "<div class='wrap'><h1>📜 Lịch sử nạp tiền</h1>";
+	$users = get_users();
+
+	echo "<table class='widefat'><thead><tr><th>User</th><th>Số tiền</th><th>Ngày</th><th>Admin</th></tr></thead><tbody>";
+	foreach ($users as $user) {
+		$transactions = get_user_meta($user->ID, 'cash_transactions', true);
+		if ($transactions) {
+			foreach ($transactions as $txn) {
+				echo "<tr>
+                    <td>{$user->user_login}</td>
+                    <td><strong>" . number_format($txn['amount'], 0, ',', '.') . " VND</strong></td>
+                    <td>{$txn['date']}</td>
+                    <td>{$txn['admin']}</td>
+                </tr>";
+			}
+		}
+	}
+	echo "</tbody></table></div>";
+}
+
+function get_user_wallet_balance($user_id)
+{
+	global $wpdb;
+
+	$user_id = intval($user_id);
+	if ($user_id <= 0) return 0;
+
+	// Lấy số dư của user từ bảng wp_users
+	$balance = $wpdb->get_var("SELECT user_balance FROM wp_users WHERE ID = $user_id");
+
+	return $balance ? intval($balance) : 0;
+}
+
+
 function custom_logout()
 {
 	wp_logout();

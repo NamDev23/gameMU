@@ -39,6 +39,10 @@
     if (is_user_logged_in()) {
       // Ví dụ hiển thị dashboard hoặc giao diện home cho người dùng đã đăng nhập
       $current_user = wp_get_current_user();
+      $balance = get_user_wallet_balance($current_user->ID);
+      echo "<div class='user-wallet'>
+            <h3>💰 Số dư của bạn: <strong>" . number_format($balance, 0, ',', '.') . " Mcash</strong></h3>
+          </div>";
     ?>
       <div class="dashboard">
         <h2>Chào mừng, <?php echo esc_html($current_user->display_name); ?></h2><br><br>
