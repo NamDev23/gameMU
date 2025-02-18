@@ -52,7 +52,7 @@
           <button id="btnInfo" class="active">Thông tin</button>
           <button id="btnChangePass">Đổi mật khẩu</button>
           <button id="btnNapMCash">Nạp mcash</button>
-          <button id="btnChuyenMCash">Chuyển mcash</button>
+          <button id="btnChangeMcash">Chuyển mcash</button>
           <button id="btnemail">Xác minh email</button>
           <button id="btnchangename">Đổi tên nhân vật</button>
         </div>
@@ -130,7 +130,41 @@
             </div>
           </form>
         </div>
+        <!-- Box chuyển mcash -->
+        <div id="boxChangeMcash" class="content-box">
+          <form method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <input type="hidden" name="action" value="change_mcash">
+            <?php wp_nonce_field('change_mcash_action'); ?>
 
+            <div class="form-group">
+              <label>Chọn máy chủ</label>
+              <select name="server">
+                <option disabled selected value="1">Tiên Linh Nguyệt Ảnh</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Số mCash hiện tại</label>
+              <input type="text" name="current_balance" value="<?php echo esc_attr(get_user_wallet_balance(get_current_user_id())); ?>" disabled>
+            </div>
+
+            <div class="form-group">
+              <label>Số lượng muốn chuyển</label>
+              <input type="number" name="amount" placeholder="Nhập số lượng" min="1" required>
+              <div class="note">Tối đa là <?php echo esc_attr(get_user_wallet_balance(get_current_user_id())); ?></div>
+            </div>
+
+            <div class="form-group">
+              <label for="captcha">Mã chống spam</label>
+              <div class="captcha_container">
+                <input type="text" class="captcha" id="captcha" name="captcha" placeholder="4 số" maxlength="4" minlength="4" required>
+                <img src="<?php echo esc_url(get_template_directory_uri() . '/captcha.php'); ?>" alt="Captcha" class="captcha_img" onclick="this.src='<?php echo esc_url(get_template_directory_uri() . '/captcha.php'); ?>?'+Math.random();">
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Chuyển</button>
+          </form>
+        </div>
         <!-- Box nạp mcash -->
         <div id="boxNapMCash" class="content-box">
           <!-- Tab lựa chọn: MOMO và Ngân hàng -->
@@ -184,8 +218,6 @@
           </div>
         </div>
 
-
-        <!-- Thêm boxEmail để gửi link xác minh -->
         <!-- Thêm boxEmail để gửi link xác minh -->
         <div id="boxEmail" class="content-box">
           <h3>Xác minh email</h3>
@@ -428,15 +460,18 @@
     xhr.send();
   }
 </script>
+
 <script>
   // Lấy các phần tử nút và box
   const btnInfo = document.getElementById('btnInfo');
   const btnChangePass = document.getElementById('btnChangePass');
   const btnNapMCash = document.getElementById('btnNapMCash');
+  const btnChangeMcash = document.getElementById('btnChangeMcash');
 
   const boxInfo = document.getElementById('boxInfo');
   const boxChangePass = document.getElementById('boxChangePass');
   const boxNapMCash = document.getElementById('boxNapMCash');
+  const boxChangeMcash = document.getElementById('boxChangeMcash');
 
   // Hàm reset tất cả các button và box về trạng thái ban đầu
   function resetTabs() {
@@ -444,11 +479,14 @@
     btnInfo.classList.remove('active');
     btnChangePass.classList.remove('active');
     btnNapMCash.classList.remove('active');
+    btnChangeMcash.classList.remove('active');
+
 
     // Ẩn tất cả các box
     boxInfo.classList.remove('active');
     boxChangePass.classList.remove('active');
     boxNapMCash.classList.remove('active');
+    boxChangeMcash.classList.remove('active');
   }
 
   // Xử lý sự kiện click cho từng button
@@ -468,6 +506,11 @@
     resetTabs();
     btnNapMCash.classList.add('active');
     boxNapMCash.classList.add('active');
+  });
+  btnChangeMcash.addEventListener('click', () => {
+    resetTabs();
+    btnChangeMcash.classList.add('active');
+    boxChangeMcash.classList.add('active');
   });
 
   document.getElementById('btnMomo').addEventListener('click', function() {
@@ -496,11 +539,13 @@
     btnChangePass.classList.remove('active');
     btnNapMCash.classList.remove('active');
     btnemail.classList.remove('active');
+    btnChangeMcash.classList.remove('active');
 
     boxInfo.classList.remove('active');
     boxChangePass.classList.remove('active');
     boxNapMCash.classList.remove('active');
     boxEmail.classList.remove('active');
+    boxChangeMcash.classList.remove('active');
   }
 
   // Sự kiện click cho btnemail

@@ -621,6 +621,53 @@ function get_user_wallet_balance($user_id)
 
 	return $balance ? intval($balance) : 0;
 }
+function handle_change_mcash()
+{
+	if (!isset($_POST['amount'], $_POST['captcha']) || !wp_verify_nonce($_POST['_wpnonce'], 'change_mcash_action')) {
+		wp_die('Xác thực không hợp lệ!');
+	}
+
+	global $wpdb;
+	$user_id = get_current_user_id();
+	$amount = (int) $_POST['amount'];
+	$current_balance = get_user_wallet_balance($user_id);
+
+	if ($amount <= 0 || $amount > $current_balance) {
+		wp_die('Số tiền chuyển không hợp lệ!');
+	}
+
+	// Bắt đầu transaction
+	$wpdb->query('START TRANSACTION');
+
+	// Đúng tên bảng với prefix động
+	$wp_users_table = $wpdb->prefix . 'users';
+
+	// Trừ số dư trong bảng `wp_users`
+	$update_wp = $wpdb->update(
+		$wp_users_table,
+		['user_balance' => $current_balance - $amount],
+		['ID' => $user_id],
+		['%d'],
+		['%d']
+	);
+
+	// Cộng số dư vào `t_account` trong `dbaccount`
+	$update_db = $wpdb->query($wpdb->prepare("
+        UPDATE dbaccount.t_account 
+        SET gd = gd + %d 
+        WHERE name = (SELECT user_login FROM {$wp_users_table} WHERE ID = %d)", $amount, $user_id));
+
+	if ($update_wp !== false && $update_db !== false) {
+		$wpdb->query('COMMIT');
+		wp_redirect(home_url('/?mcash_success=1'));
+		exit;
+	} else {
+		$wpdb->query('ROLLBACK');
+		wp_die('Chuyển mCash thất bại! Vui lòng thử lại.');
+	}
+}
+
+add_action('admin_post_change_mcash', 'handle_change_mcash');
 
 
 function custom_logout()
